@@ -25,13 +25,17 @@ router.get('/comments', (req, res, next) => {
 router.post('/comments', requireToken, (req, res, next) => {
   // set owner of new comment to be current user
   req.body.comment.owner = req.user.id
-  //   let comment = req.body.comment
+  let comments = req.body.comment
   Comment.create(req.body.comment)
   // respond to succesful `create` with status 201 and JSON of new "comment"
     .then(comment => {
+      console.log('hello')
+      console.log(comment)
       let id = comment._id
-      let postID = comment.post
-      Restaurant.findById(postID)
+      let restaurantID = comments.restaurant
+
+      console.log(restaurantID)
+      Restaurant.findById(restaurantID)
         .then(handle404)
         .then(foundRestaurant => {
           foundRestaurant.comment.push(id)

@@ -63,7 +63,7 @@ router.post('/restaurants', requireToken, (req, res, next) => {
 })
 // UPDATE //// PATCH /restaurants/id
 router.patch('/restaurants/:id', requireToken, removeBlanks, (req, res, next) => {
-  delete req.body.post.owner
+  delete req.body.restaurant.owner
   Restaurant.findById(req.params.id)
     .then(handle404)
     .then(restaurant => {
