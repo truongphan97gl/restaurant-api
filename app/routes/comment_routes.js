@@ -29,8 +29,6 @@ router.post('/comments', requireToken, (req, res, next) => {
   Comment.create(req.body.comment)
   // respond to succesful `create` with status 201 and JSON of new "comment"
     .then(comment => {
-      console.log('hello')
-      console.log(comment)
       let id = comment._id
       let restaurantID = comments.restaurant
 
@@ -38,12 +36,13 @@ router.post('/comments', requireToken, (req, res, next) => {
       Restaurant.findById(restaurantID)
         .then(handle404)
         .then(foundRestaurant => {
-          foundRestaurant.comment.push(id)
+          foundRestaurant.comments.push(id)
           let restaurant = foundRestaurant
+          console.log(restaurant)
           return foundRestaurant.update(restaurant)
         })
         .then(() => {
-          res.status(200).json({ comment: comment.toObject() })
+          res.status(200).json({ comments: comment.toObject() })
         })
 
         .catch(next)

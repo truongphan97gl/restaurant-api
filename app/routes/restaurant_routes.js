@@ -17,7 +17,7 @@ router.get('/restaurants', (req, res, next) => {
   Restaurant.find()
     .populate('owner')
     .populate({
-      path: 'comment',
+      path: 'comments',
       model: 'Comment',
       populate: {
         path: 'owner',
@@ -25,6 +25,7 @@ router.get('/restaurants', (req, res, next) => {
       }
     })
     .then(restaurants => {
+      console.log(restaurants)
       return restaurants.map(restaurant => restaurant.toObject())
     })
     .then(restaurants => {
@@ -38,16 +39,26 @@ router.get('/restaurants/:id', (req, res, next) => {
   // keep track of doc
   let restaurant
   Restaurant.findById(id)
+    .populate({
+      path: 'comments',
+      model: 'Comment',
+      populate: {
+        path: 'owner',
+        model: 'User'
+      }
+    })
     .then(handle404)
     .then(foundRestaurant => {
       // store doc
       restaurant = foundRestaurant.toObject()
       // find all comments of doc w/ specific id
-      return Restaurant.find({ post: id })
+      console.log(restaurant)
+      return Comment.find({ restaurant: id })
     })
     .then(comments => {
-      // add comments to doc object for serializing
-      restaurant.comments = comments
+      // // add comments to doc object for serializing
+      // console.log(comments)
+      // restaurant.comments = comments
       res.json({ restaurant })
     })
     .catch(next)
@@ -55,6 +66,7 @@ router.get('/restaurants/:id', (req, res, next) => {
 // CREATE ////  /restaurants
 router.post('/restaurants', requireToken, (req, res, next) => {
   req.body.post.owner = req.user.id
+  console.log(req.body.post)
   Restaurant.create(req.body.post)
     .then(restaurant => {
       res.status(201).json({ restaurant: restaurant.toObject() })
