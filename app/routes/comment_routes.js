@@ -25,24 +25,25 @@ router.get('/comments', (req, res, next) => {
 router.post('/comments', requireToken, (req, res, next) => {
   // set owner of new comment to be current user
   req.body.comment.owner = req.user.id
+
   let comments = req.body.comment
+
   Comment.create(req.body.comment)
   // respond to succesful `create` with status 201 and JSON of new "comment"
     .then(comment => {
       let id = comment._id
       let restaurantID = comments.restaurant
 
-      console.log(restaurantID)
       Restaurant.findById(restaurantID)
+        .populate('owner')
         .then(handle404)
         .then(foundRestaurant => {
           foundRestaurant.comments.push(id)
           let restaurant = foundRestaurant
-          console.log(restaurant)
           return foundRestaurant.update(restaurant)
         })
         .then(() => {
-          res.status(200).json({ comments: comment.toObject() })
+          res.status(200).json({ comment: comment.toObject() })
         })
 
         .catch(next)
@@ -51,7 +52,7 @@ router.post('/comments', requireToken, (req, res, next) => {
     .catch(next)
 })
 
-router.get('/comments-user/:id', requireToken, (req, res, next) => {
+router.get('/comments/:id', (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
 
   Comment.findById(req.params.id)

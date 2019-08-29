@@ -24,8 +24,15 @@ router.get('/restaurants', (req, res, next) => {
         model: 'User'
       }
     })
+    .populate({
+      path: 'likes',
+      model: 'Like',
+      populate: {
+        path: 'owner',
+        model: 'User'
+      }
+    })
     .then(restaurants => {
-      console.log(restaurants)
       return restaurants.map(restaurant => restaurant.toObject())
     })
     .then(restaurants => {
@@ -47,12 +54,19 @@ router.get('/restaurants/:id', (req, res, next) => {
         model: 'User'
       }
     })
+    .populate({
+      path: 'likes',
+      model: 'Like',
+      populate: {
+        path: 'owner',
+        model: 'User'
+      }
+    })
     .then(handle404)
     .then(foundRestaurant => {
       // store doc
       restaurant = foundRestaurant.toObject()
       // find all comments of doc w/ specific id
-      console.log(restaurant)
       return Comment.find({ restaurant: id })
     })
     .then(comments => {
@@ -66,7 +80,6 @@ router.get('/restaurants/:id', (req, res, next) => {
 // CREATE ////  /restaurants
 router.post('/restaurants', requireToken, (req, res, next) => {
   req.body.restaurant.owner = req.user.id
-  console.log(req.body.restaurant)
   Restaurant.create(req.body.restaurant)
     .then(restaurant => {
       res.status(201).json({ restaurant: restaurant.toObject() })
