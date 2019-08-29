@@ -65,9 +65,9 @@ router.get('/restaurants/:id', (req, res, next) => {
 })
 // CREATE ////  /restaurants
 router.post('/restaurants', requireToken, (req, res, next) => {
-  req.body.post.owner = req.user.id
-  console.log(req.body.post)
-  Restaurant.create(req.body.post)
+  req.body.restaurant.owner = req.user.id
+  console.log(req.body.restaurant)
+  Restaurant.create(req.body.restaurant)
     .then(restaurant => {
       res.status(201).json({ restaurant: restaurant.toObject() })
     })
