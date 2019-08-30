@@ -16,7 +16,7 @@ This application allows the owner (user) to add their restaurant for the other p
 ## Important Links 
 
 - [Other Repo](https://github.com/truongphan97gl/restaurant-api)
-- [Deployed API]((https://shrouded-stream-88197.herokuapp.com/))
+- [Deployed API](https://shrouded-stream-88197.herokuapp.com/)
 - [Deployed Client](https://truongphan97gl.github.io/restaurant-client/#/)
 ### User Stories
 
